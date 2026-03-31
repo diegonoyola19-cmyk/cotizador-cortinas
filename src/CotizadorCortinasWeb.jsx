@@ -1,14 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { FileText, Plus, Trash2, Pencil } from "lucide-react";
+import { FileText, Plus, Trash2, Pencil, Cloud } from "lucide-react";
+import { SUPABASE_CONFIG_OK, supabase } from "./supabaseClient";
 
 const STORAGE_KEYS = {
   brand: "cotizador_brand_v5",
   catalog: "cotizador_catalog_v5",
   quote: "cotizador_quote_v5",
   items: "cotizador_items_v5",
+  syncKey: "cotizador_sync_key_v1",
 };
+
+const SUPABASE_TABLE = "shared_quotes";
+const DEFAULT_SYNC_KEY = "cotizador-principal";
 
 function generarId() {
   if (window.crypto && window.crypto.randomUUID) {
@@ -161,6 +166,15 @@ export default function CotizadorCortinasWeb() {
   });
 
   const [productoEnEdicion, setProductoEnEdicion] = useState(null);
+  const [syncKey, setSyncKey] = useState(() =>
+    leerStorage(STORAGE_KEYS.syncKey, DEFAULT_SYNC_KEY)
+  );
+  const [estadoNube, setEstadoNube] = useState(
+    SUPABASE_CONFIG_OK
+      ? "ConexiÃ³n lista para sincronizar."
+      : "Falta configurar las variables pÃºblicas de Supabase."
+  );
+  const [sincronizando, setSincronizando] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.brand, JSON.stringify(brand));
@@ -177,6 +191,15 @@ export default function CotizadorCortinasWeb() {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.items, JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.syncKey, JSON.stringify(syncKey));
+  }, [syncKey]);
+
+  useEffect(() => {
+    if (!SUPABASE_CONFIG_OK) return;
+    cargarDesdeNube({ silencioso: true });
+  }, []);
 
   function actualizarDato(campo, valor) {
     setDatos((prev) => ({ ...prev, [campo]: valor }));
@@ -334,6 +357,113 @@ export default function CotizadorCortinasWeb() {
       }));
     };
     reader.readAsDataURL(archivo);
+  }
+
+  async function guardarEnNube() {
+    if (!SUPABASE_CONFIG_OK || !supabase) {
+      setEstadoNube("Configura Supabase para guardar en la nube.");
+      return;
+    }
+
+    const clave = String(syncKey || "").trim();
+    if (!clave) {
+      setEstadoNube("Ingresa una clave de sincronizaciÃ³n.");
+      return;
+    }
+
+    setSincronizando(true);
+    setEstadoNube("Guardando cambios en la nube...");
+
+    const payload = {
+      id: clave,
+      brand,
+      catalog: catalogo,
+      quote: datos,
+      items,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from(SUPABASE_TABLE)
+      .upsert(payload, { onConflict: "id" });
+
+    if (error) {
+      setEstadoNube(
+        "No se pudo guardar en Supabase. Revisa la tabla shared_quotes y sus permisos."
+      );
+      setSincronizando(false);
+      return;
+    }
+
+    setEstadoNube(`Guardado en la nube con la clave "${clave}".`);
+    setSincronizando(false);
+  }
+
+  async function cargarDesdeNube(opciones = {}) {
+    if (!SUPABASE_CONFIG_OK || !supabase) {
+      if (!opciones.silencioso) {
+        setEstadoNube("Configura Supabase para cargar datos compartidos.");
+      }
+      return;
+    }
+
+    const clave = String(syncKey || "").trim();
+    if (!clave) {
+      if (!opciones.silencioso) {
+        setEstadoNube("Ingresa una clave de sincronizaciÃ³n.");
+      }
+      return;
+    }
+
+    setSincronizando(true);
+    if (!opciones.silencioso) {
+      setEstadoNube("Buscando datos guardados en la nube...");
+    }
+
+    const { data, error } = await supabase
+      .from(SUPABASE_TABLE)
+      .select("brand, catalog, quote, items")
+      .eq("id", clave)
+      .maybeSingle();
+
+    if (error) {
+      setEstadoNube(
+        "No se pudo cargar desde Supabase. Revisa la tabla shared_quotes y sus permisos."
+      );
+      setSincronizando(false);
+      return;
+    }
+
+    if (!data) {
+      setEstadoNube(
+        opciones.silencioso
+          ? `No hay datos remotos para la clave "${clave}" todavÃ­a.`
+          : `No se encontrÃ³ informaciÃ³n guardada para la clave "${clave}".`
+      );
+      setSincronizando(false);
+      return;
+    }
+
+    setBrand(data.brand || defaultBrand);
+    setCatalogo(
+      Array.isArray(data.catalog) && data.catalog.length
+        ? data.catalog
+        : defaultCatalog
+    );
+    setDatos(data.quote || defaultQuoteData);
+
+    const catalogoRemoto =
+      Array.isArray(data.catalog) && data.catalog.length
+        ? data.catalog
+        : defaultCatalog;
+    setItems(
+      Array.isArray(data.items) && data.items.length
+        ? data.items
+        : [crearItem(catalogoRemoto)]
+    );
+
+    setEstadoNube(`Datos cargados desde la nube con la clave "${clave}".`);
+    setSincronizando(false);
   }
 
   const itemsCalculados = useMemo(() => {
@@ -984,6 +1114,44 @@ export default function CotizadorCortinasWeb() {
                     <FileText size={18} />
                     Generar PDF
                   </button>
+                </div>
+              </Panel>
+
+              <Panel titulo="SincronizaciÃ³n en la nube">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <Cloud size={16} />
+                    Usa la misma clave en tus dispositivos para compartir esta cotizaciÃ³n.
+                  </div>
+
+                  <Campo
+                    label="Clave de sincronizaciÃ³n"
+                    value={syncKey}
+                    onChange={setSyncKey}
+                  />
+
+                  <div className="rounded-xl bg-slate-100 p-3 text-sm text-slate-600">
+                    {estadoNube}
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    <button
+                      onClick={guardarEnNube}
+                      disabled={sincronizando}
+                      className="w-full rounded-xl px-4 py-3 text-white disabled:opacity-60"
+                      style={{ backgroundColor: brand.colorPrimario }}
+                    >
+                      {sincronizando ? "Sincronizando..." : "Guardar en la nube"}
+                    </button>
+
+                    <button
+                      onClick={() => cargarDesdeNube()}
+                      disabled={sincronizando}
+                      className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-700 disabled:opacity-60"
+                    >
+                      Cargar desde la nube
+                    </button>
+                  </div>
                 </div>
               </Panel>
             </div>
