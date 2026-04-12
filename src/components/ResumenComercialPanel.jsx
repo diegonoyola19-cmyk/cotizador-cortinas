@@ -53,17 +53,17 @@ export function ResumenComercialPanel({ totales, datos, brand, catalogo, itemsCa
   };
 
   return (
-    <div className="space-y-4 xl:sticky xl:top-4 relative z-10 transition-all">
+    <div className="relative z-10 space-y-4 transition-all xl:sticky xl:top-4">
       <Panel 
         titulo="Resumen Comercial" 
         tone="highlight" 
-        className="!rounded-[28px] !p-5 sm:!p-6 !border-white/10 !bg-gradient-to-br !from-slate-900 !to-slate-950 !shadow-[0_24px_48px_rgba(15,23,42,0.25)] relative overflow-hidden group"
+        className="!rounded-[24px] !p-4 sm:!rounded-[28px] sm:!p-6 !border-white/10 !bg-gradient-to-br !from-slate-900 !to-slate-950 !shadow-[0_20px_40px_rgba(15,23,42,0.25)] relative overflow-hidden group"
       >
         {/* Decorative elements for WOW effect */}
         <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-white/5 opacity-50 blur-3xl transition-transform group-hover:scale-150" />
         <div className="absolute -left-10 -bottom-10 h-32 w-32 rounded-full bg-sky-500/10 opacity-50 blur-2xl transition-transform group-hover:scale-150" />
         
-        <div className="relative z-10 rounded-[20px] border border-white/10 bg-white/[0.04] p-4 backdrop-blur-md">
+        <div className="relative z-10 rounded-[18px] border border-white/10 bg-white/[0.04] p-3.5 backdrop-blur-md sm:rounded-[20px] sm:p-4">
           <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/45">Cierre de Cotización</p>
           <div className="space-y-2">
             <FilaResumen label="Subtotal" valor={formatoDinero(totales.subtotal)} />
@@ -77,18 +77,18 @@ export function ResumenComercialPanel({ totales, datos, brand, catalogo, itemsCa
           </div>
         </div>
 
-        <div className="relative z-10 mt-5 grid gap-2.5">
+        <div className="relative z-10 mt-4 grid gap-2 sm:mt-5 sm:gap-2.5">
           <ButtonPrimary 
             onClick={manejarGenerarPDF} 
             color="#ffffff" 
-            className="!h-12 !rounded-[18px] !text-slate-900 shadow-[0_12px_24px_rgba(255,255,255,0.12)] hover:!shadow-[0_16px_32px_rgba(255,255,255,0.18)]" 
+            className="!h-11 !rounded-[16px] !text-slate-900 shadow-[0_12px_24px_rgba(255,255,255,0.12)] hover:!shadow-[0_16px_32px_rgba(255,255,255,0.18)] sm:!h-12 sm:!rounded-[18px]" 
             icon={<FileText size={18} className="text-slate-700" />}
           >
             Generar PDF Profesional
           </ButtonPrimary>
           <ButtonSecondary 
             onClick={manejarWhatsAppProduccion} 
-            className="!h-12 !rounded-[18px] !border-[rgba(56,189,248,0.3)] !bg-[rgba(56,189,248,0.1)] !text-sky-300 hover:!bg-[rgba(56,189,248,0.2)]"
+            className="!h-11 !rounded-[16px] !border-[rgba(56,189,248,0.3)] !bg-[rgba(56,189,248,0.1)] !text-sky-300 hover:!bg-[rgba(56,189,248,0.2)] sm:!h-12 sm:!rounded-[18px]"
             icon={<Send size={16} />}
           >
             Enviar WhatsApp a Producción
@@ -96,7 +96,7 @@ export function ResumenComercialPanel({ totales, datos, brand, catalogo, itemsCa
           <ButtonSecondary 
             onClick={guardarCotizacionEnviada} 
             disabled={guardandoCotizacion} 
-            className="!h-12 !rounded-[18px] !border-white/15 !bg-white/5 !text-white hover:!bg-white/10"
+            className="!h-11 !rounded-[16px] !border-white/15 !bg-white/5 !text-white hover:!bg-white/10 sm:!h-12 sm:!rounded-[18px]"
             icon={guardandoCotizacion ? <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" /> : <Check size={16} />}
           >
             {guardandoCotizacion ? "Guardando en historial..." : "Guardar Cotización"}
@@ -104,13 +104,13 @@ export function ResumenComercialPanel({ totales, datos, brand, catalogo, itemsCa
           <ButtonSecondary 
             onClick={handleLimpiar} 
             icon={<Plus size={16} />} 
-            className="!h-12 !rounded-[18px] !border-transparent !bg-transparent !text-white/60 hover:!bg-white/5 hover:!text-white"
+            className="!h-11 !rounded-[16px] !border-transparent !bg-transparent !text-white/60 hover:!bg-white/5 hover:!text-white sm:!h-12 sm:!rounded-[18px]"
           >
             Nueva Cotización
           </ButtonSecondary>
         </div>
 
-        <div className="relative z-10 mt-5 rounded-[20px] border border-white/5 bg-white/[0.03] p-4 text-xs">
+        <div className="relative z-10 mt-4 rounded-[18px] border border-white/5 bg-white/[0.03] p-3.5 text-xs sm:mt-5 sm:rounded-[20px] sm:p-4">
           <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/80">
               <span className="font-serif italic font-bold">i</span>

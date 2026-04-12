@@ -9,8 +9,8 @@ export function Panel({ titulo, children, extraTopRight, className = "", bodyCla
   const titleTone = tone === "highlight" ? "text-white" : "text-slate-900 dark:text-slate-100";
 
   return (
-    <div className={`rounded-[28px] border p-6 backdrop-blur-sm sm:p-7 ${toneMap[tone]} ${className}`}>
-      <div className={`mb-6 flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between ${borderTone}`}>
+    <div className={`rounded-[24px] border p-4 backdrop-blur-sm sm:rounded-[28px] sm:p-7 ${toneMap[tone]} ${className}`}>
+      <div className={`mb-5 flex flex-col gap-3 border-b pb-4 sm:mb-6 sm:flex-row sm:items-center sm:justify-between ${borderTone}`}>
         <h2 className={`text-lg font-semibold tracking-[-0.02em] ${titleTone}`}>{titulo}</h2>
         {extraTopRight && <div className="w-full sm:w-auto">{extraTopRight}</div>}
       </div>

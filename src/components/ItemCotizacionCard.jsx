@@ -18,10 +18,10 @@ export function ItemCotizacionCard({ index, item, calculado, catalogo, actualiza
   const cantidadTonos = Array.isArray(item.tonosSeleccionados) ? item.tonosSeleccionados.length : 0;
 
   return (
-    <div className="group rounded-[16px] border border-slate-200 bg-slate-50/60 p-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] transition-all hover:bg-white hover:shadow-md sm:p-3 anim-fade-in relative overflow-hidden">
+    <div className="group relative overflow-hidden rounded-[16px] border border-slate-200 bg-slate-50/60 p-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] transition-all hover:bg-white hover:shadow-md sm:p-3 anim-fade-in">
       <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-transparent via-slate-300 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
       
-      <div className="mb-2 flex items-center justify-between gap-3 border-b border-slate-200/80 pb-2">
+      <div className="mb-2 flex items-center justify-between gap-2 border-b border-slate-200/80 pb-2">
         <div>
           <h3 className="text-sm font-bold tracking-tight text-slate-900 flex items-center gap-2">
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 text-[10px] font-bold text-slate-600">
@@ -53,12 +53,12 @@ export function ItemCotizacionCard({ index, item, calculado, catalogo, actualiza
       </div>
 
       <div className="grid gap-2 sm:grid-cols-6 lg:grid-cols-8">
-        <div className="sm:col-span-3 lg:col-span-3">
+        <div className="sm:col-span-6 lg:col-span-3">
           <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">Producto</label>
           <select
             value={item.catalogId}
             onChange={(e) => actualizarItem(index, "catalogId", e.target.value)}
-            className="h-9 w-full rounded-xl border border-slate-200 bg-white px-2.5 text-xs text-slate-800 shadow-[inset_0_1px_2px_rgba(15,23,42,0.02)] transition-all focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200/70"
+            className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-800 shadow-[inset_0_1px_2px_rgba(15,23,42,0.02)] transition-all focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200/70 sm:h-9 sm:px-2.5"
           >
             {catalogo.map((producto) => (
               <option key={producto.id} value={producto.id}>{producto.nombre}</option>
@@ -66,16 +66,16 @@ export function ItemCotizacionCard({ index, item, calculado, catalogo, actualiza
           </select>
         </div>
 
-        <Campo label="Cant." type="number" inputProps={{ step: "1" }} value={item.cantidad} onChange={(v) => actualizarItem(index, "cantidad", v)} className="sm:col-span-1 lg:col-span-1" inputClassName="h-9 px-2.5 text-xs font-semibold" labelClassName="!mb-1 !text-[10px] !uppercase" />
+        <Campo label="Cant." type="number" inputProps={{ step: "1" }} value={item.cantidad} onChange={(v) => actualizarItem(index, "cantidad", v)} className="sm:col-span-2 lg:col-span-1" inputClassName="h-10 px-3 text-xs font-semibold sm:h-9 sm:px-2.5" labelClassName="!mb-1 !text-[10px] !uppercase" />
 
         {item.usaMedidas ? (
           <>
-            <Campo label="Ancho" type="number" value={item.ancho} onChange={(v) => actualizarItem(index, "ancho", v)} className="sm:col-span-1 lg:col-span-1" inputClassName="h-9 px-2.5 text-xs" labelClassName="!mb-1 !text-[10px] !uppercase" />
-            <Campo label="Alto" type="number" value={item.alto} onChange={(v) => actualizarItem(index, "alto", v)} className="sm:col-span-1 lg:col-span-1" inputClassName="h-9 px-2.5 text-xs" labelClassName="!mb-1 !text-[10px] !uppercase" />
+            <Campo label="Ancho" type="number" value={item.ancho} onChange={(v) => actualizarItem(index, "ancho", v)} className="sm:col-span-2 lg:col-span-1" inputClassName="h-10 px-3 text-xs sm:h-9 sm:px-2.5" labelClassName="!mb-1 !text-[10px] !uppercase" />
+            <Campo label="Alto" type="number" value={item.alto} onChange={(v) => actualizarItem(index, "alto", v)} className="sm:col-span-2 lg:col-span-1" inputClassName="h-10 px-3 text-xs sm:h-9 sm:px-2.5" labelClassName="!mb-1 !text-[10px] !uppercase" />
           </>
         ) : (
-          <div className="sm:col-span-2 lg:col-span-2 flex items-end">
-            <div className="flex h-9 w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50/50 px-2.5 text-xs font-medium text-slate-400">
+          <div className="sm:col-span-4 lg:col-span-2 flex items-end">
+            <div className="flex h-10 w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50/50 px-3 text-xs font-medium text-slate-400 sm:h-9 sm:px-2.5">
               Medidas no aplican
             </div>
           </div>
@@ -87,11 +87,11 @@ export function ItemCotizacionCard({ index, item, calculado, catalogo, actualiza
           value={item.precio}
           onChange={(v) => actualizarItem(index, "precio", v)}
           className="sm:col-span-2 lg:col-span-2"
-          inputClassName="h-9 px-2.5 text-xs text-sky-800 font-bold"
+          inputClassName="h-10 px-3 text-xs text-sky-800 font-bold sm:h-9 sm:px-2.5"
           labelClassName="!mb-1 !text-[10px] !uppercase text-sky-700"
         />
 
-        <Campo label="Observación del cliente" value={item.observacion} onChange={(v) => actualizarItem(index, "observacion", v)} className="sm:col-span-6 lg:col-span-8" inputClassName="h-9 px-2.5 text-xs" labelClassName="!mb-1 !text-[10px] !uppercase" />
+        <Campo label="Observación del cliente" value={item.observacion} onChange={(v) => actualizarItem(index, "observacion", v)} className="sm:col-span-6 lg:col-span-8" inputClassName="h-10 px-3 text-xs sm:h-9 sm:px-2.5" labelClassName="!mb-1 !text-[10px] !uppercase" />
 
         <div className="sm:col-span-6 lg:col-span-8 rounded-[12px] border border-slate-200 bg-slate-100/50 px-3 py-2 transition-colors group-hover:bg-slate-50">
           <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
@@ -114,7 +114,7 @@ export function ItemCotizacionCard({ index, item, calculado, catalogo, actualiza
         </div>
       </div>
 
-      <div className="mt-2.5 grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-2.5 grid grid-cols-2 gap-1.5 lg:grid-cols-5">
         <CajaResumen label="Área real" valor={item.usaMedidas ? `${calculado.areaReal.toFixed(2)} m2` : "-"} color="rgba(248, 250, 252, 0.8)" />
         <CajaResumen label="Ancho fact." valor={item.usaMedidas ? `${calculado.anchoFacturable.toFixed(2)} m` : "-"} color="rgba(248, 250, 252, 0.8)" />
         <CajaResumen label="Alto fact." valor={item.usaMedidas ? `${calculado.altoFacturable.toFixed(2)} m` : "-"} color="rgba(248, 250, 252, 0.8)" />
@@ -130,3 +130,4 @@ export function ItemCotizacionCard({ index, item, calculado, catalogo, actualiza
     </div>
   );
 }
+

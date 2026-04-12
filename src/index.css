@@ -64,13 +64,17 @@
     max-width: 100%;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   button,
   input,
   select,
   textarea {
     font: inherit;
   }
-  
+
   input[type="number"]::-webkit-inner-spin-button, 
   input[type="number"]::-webkit-outer-spin-button { 
     -webkit-appearance: none; 
@@ -104,5 +108,19 @@
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background-color: #94a3b8;
+  }
+
+  .safe-bottom {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
+  }
+}
+
+@media (max-width: 640px) {
+  @layer base {
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
   }
 }

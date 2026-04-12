@@ -91,8 +91,8 @@ export function EstadisticasTab({ state }) {
       <Panel titulo="Centro de Mando y Estadísticas">
         
         {/* Controles Top */}
-        <div className="mb-6 flex flex-col justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4 sm:flex-row sm:items-center">
-          <div className="flex w-full flex-col items-stretch gap-4 sm:flex-row sm:items-center">
+        <div className="mb-6 flex flex-col justify-between gap-4 border-b border-slate-100 pb-4 dark:border-slate-800 sm:flex-row sm:items-center">
+          <div className="flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <ButtonSecondary 
               onClick={cargarPanelAdministrativo} 
               disabled={cargandoAdmin || analizando} 
@@ -142,20 +142,20 @@ export function EstadisticasTab({ state }) {
                <Users size={16} className="text-indigo-500 dark:text-indigo-400"/>
                Desempeño por Asesor Comercial
              </h3>
-             <div className="overflow-x-auto pb-2 custom-scrollbar">
-               <div className="h-[300px] min-w-[560px] w-full">
+             <div className="pb-2">
+               <div className="h-[260px] w-full sm:h-[300px]">
                  <ResponsiveContainer width="100%" height="100%">
-                   <BarChart data={metricas.chartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+                   <BarChart data={metricas.chartData} margin={{ top: 10, right: 10, left: -24, bottom: 8 }}>
                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                     <XAxis dataKey="nombre" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} dy={10} />
+                     <XAxis dataKey="nombre" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748B' }} interval={0} angle={metricas.chartData.length > 4 ? -20 : 0} textAnchor={metricas.chartData.length > 4 ? "end" : "middle"} height={metricas.chartData.length > 4 ? 54 : 30} />
                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} />
                      <Tooltip 
                        cursor={{fill: 'rgba(226, 232, 240, 0.4)'}} 
                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
                      />
                      <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '12px' }} />
-                     <Bar name="Presentadas" dataKey="cotizadas" fill="#94A3B8" radius={[4, 4, 0, 0]} barSize={30} />
-                     <Bar name="Ganadas" dataKey="aprobadas" fill="#10B981" radius={[4, 4, 0, 0]} barSize={30} />
+                     <Bar name="Presentadas" dataKey="cotizadas" fill="#94A3B8" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                     <Bar name="Ganadas" dataKey="aprobadas" fill="#10B981" radius={[4, 4, 0, 0]} maxBarSize={28} />
                    </BarChart>
                  </ResponsiveContainer>
                </div>

@@ -20,8 +20,22 @@ export function CotizacionTab({ state }) {
   } = state;
 
   return (
-    <div className="mt-4 grid gap-5 xl:grid-cols-[minmax(0,2fr)_320px] md:items-start anim-fade-in">
-      <div className="space-y-5">
+    <div className="safe-bottom mt-4 grid gap-5 xl:grid-cols-[minmax(0,2fr)_320px] md:items-start anim-fade-in">
+      <div className="xl:order-2">
+        <ResumenComercialPanel
+          totales={totales}
+          datos={datos}
+          brand={brand}
+          catalogo={catalogo}
+          itemsCalculados={itemsCalculados}
+          guardandoCotizacion={guardandoCotizacion}
+          guardarCotizacionEnviada={guardarCotizacionEnviada}
+          limpiarCotizacion={limpiarCotizacion}
+          generarPDFCotizacion={generarPDFCotizacion}
+        />
+      </div>
+
+      <div className="space-y-5 xl:order-1">
         <Panel
           titulo="Datos del Cliente y Cotización"
           className="!rounded-[28px] !p-5 sm:!p-7 shadow-[0_12px_40px_rgba(15,23,42,0.06)]"
@@ -125,18 +139,6 @@ export function CotizacionTab({ state }) {
           </div>
         </Panel>
       </div>
-
-      <ResumenComercialPanel
-        totales={totales}
-        datos={datos}
-        brand={brand}
-        catalogo={catalogo}
-        itemsCalculados={itemsCalculados}
-        guardandoCotizacion={guardandoCotizacion}
-        guardarCotizacionEnviada={guardarCotizacionEnviada}
-        limpiarCotizacion={limpiarCotizacion}
-        generarPDFCotizacion={generarPDFCotizacion}
-      />
 
       <AsistenteIAPanel 
         visible={modalMagico} 

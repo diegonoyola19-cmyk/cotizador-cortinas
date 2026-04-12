@@ -55,7 +55,7 @@ export function HistorialTab({ state }) {
   }, [cotizacionesFiltradas, filtroEstatusHistorial]);
 
   return (
-    <div className="mt-4 space-y-4 anim-fade-in flex flex-col h-full max-h-[calc(100vh-100px)]">
+    <div className="mt-4 flex min-h-0 flex-col space-y-4 anim-fade-in xl:h-full xl:max-h-[calc(100vh-100px)]">
       <Panel titulo="Centro de Negocios (Lista Compacta)" className="flex-shrink-0 !pb-2">
         <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
           <Campo label="Búsqueda global (Cliente o Folio)" value={filtroAdmin} onChange={setFiltroAdmin} inputClassName="!h-9" />
@@ -96,7 +96,7 @@ export function HistorialTab({ state }) {
       </Panel>
 
       {/* CONTENEDOR CON SCROLL ENJAULADO */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar pb-10 pr-2">
+      <div className="flex-1 overflow-visible pb-10 xl:overflow-y-auto xl:pr-2 custom-scrollbar">
         <div className="space-y-2">
           {registrosVista.length > 0 ? (
             registrosVista.map((registro) => {
@@ -108,10 +108,10 @@ export function HistorialTab({ state }) {
               return (
                 <div
                   key={registro.id}
-                  className={`flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3 rounded-xl border p-3 transition-colors ${configStatus.colorFondo} ${configStatus.colorBorde} ${isSeleccionada ? "ring-2 ring-indigo-400 bg-white dark:bg-slate-800 shadow-md" : "hover:bg-white dark:hover:bg-slate-800/80"}`}
+                  className={`flex flex-col items-stretch justify-between gap-3 rounded-xl border p-3 transition-colors xl:flex-row xl:items-center ${configStatus.colorFondo} ${configStatus.colorBorde} ${isSeleccionada ? "ring-2 ring-indigo-400 bg-white dark:bg-slate-800 shadow-md" : "hover:bg-white dark:hover:bg-slate-800/80"}`}
                 >
                   {/* SECCION 1: INFO GENERAL */}
-                  <div className="flex flex-col min-w-[200px] flex-1">
+                  <div className="flex min-w-0 flex-1 flex-col">
                      <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-400">{registro.quote?.numeroCotizacion || "S/Folio"}</span>
                         <h4 className="text-sm font-extrabold text-slate-800 dark:text-slate-100 truncate" title={registro.quote?.cliente}>{registro.quote?.cliente || "Desconocido"}</h4>
@@ -124,8 +124,8 @@ export function HistorialTab({ state }) {
                   </div>
 
                   {/* SECCION 2: ESTATUS Y MEDIDAS (CONTROLES AGILES) */}
-                  <div className="flex items-center gap-4 flex-wrap xl:flex-nowrap border-y xl:border-y-0 border-slate-200/50 dark:border-slate-700/50 py-2 xl:py-0">
-                     <div className="flex flex-col w-[130px]">
+                  <div className="flex flex-col gap-3 border-y border-slate-200/50 py-2 dark:border-slate-700/50 sm:flex-row sm:flex-wrap sm:items-center xl:flex-nowrap xl:border-y-0 xl:py-0">
+                     <div className="flex w-full flex-col sm:w-[130px]">
                         <select 
                           value={statusActual}
                           onChange={(e) => actualizarEstatusCRM(registro.id, e.target.value)}
@@ -137,7 +137,7 @@ export function HistorialTab({ state }) {
                         </select>
                      </div>
                      
-                     <div className="flex items-center h-8 px-1">
+                     <div className="flex min-h-8 items-center px-1">
                        <CheckboxField
                          label={<span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 pl-1 uppercase tracking-wider">Medidas Conf.</span>}
                          checked={registro.quote?.medidasConfirmadas || false}
@@ -148,13 +148,13 @@ export function HistorialTab({ state }) {
                   </div>
 
                   {/* SECCION 3: TOTAL Y BOTONES */}
-                  <div className="flex items-center justify-between xl:justify-end gap-3 flex-shrink-0">
-                     <div className="text-sm font-extrabold text-slate-800 dark:text-slate-100 flex flex-col items-end min-w-[90px]">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between xl:justify-end xl:gap-3 xl:flex-shrink-0">
+                     <div className="flex min-w-[90px] flex-col sm:items-start xl:items-end text-sm font-extrabold text-slate-800 dark:text-slate-100">
                        <span className="text-[9px] uppercase text-slate-400 dark:text-slate-500 font-bold mb-[1px]">Total</span>
                        {formatoDinero(registro.totals?.totalFinal || 0)}
                      </div>
 
-                     <div className="flex items-center gap-1.5 ml-2 border-l border-slate-200/60 dark:border-slate-700/60 pl-3">
+                     <div className="flex items-center justify-end gap-1.5 border-t border-slate-200/60 pt-3 dark:border-slate-700/60 sm:border-t-0 sm:pt-0 xl:ml-2 xl:border-l xl:pl-3">
                         <button 
                           onClick={() => setIaTargetRegistro(registro)}
                           className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-slate-200 transition-colors shadow-sm"
