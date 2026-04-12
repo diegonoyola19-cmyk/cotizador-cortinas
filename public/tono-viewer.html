@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vista de Tono</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #1e293b;
+        --muted: #64748b;
+        --line: #dbe4ee;
+        --brand: #26508c;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, sans-serif;
+        background: linear-gradient(180deg, #eef3f9 0%, var(--bg) 100%);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .card {
+        width: min(960px, 100%);
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+      }
+      .header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(135deg, var(--brand) 0%, #3f669f 100%);
+        color: white;
+      }
+      .eyebrow {
+        margin: 0 0 6px;
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        opacity: 0.72;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(24px, 4vw, 34px);
+        line-height: 1.08;
+      }
+      .meta {
+        margin-top: 8px;
+        font-size: 14px;
+        opacity: 0.82;
+      }
+      .image-wrap {
+        padding: 24px;
+      }
+      img {
+        display: block;
+        width: 100%;
+        max-height: 75vh;
+        object-fit: contain;
+        background: #fff;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+      }
+      .empty {
+        padding: 48px 24px;
+        text-align: center;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <section class="header">
+        <p class="eyebrow">Catalogo de tonos</p>
+        <h1 id="title">Tono</h1>
+        <div class="meta" id="meta"></div>
+      </section>
+      <section class="image-wrap" id="content">
+        <div class="empty">No se encontro una imagen para mostrar.</div>
+      </section>
+    </main>
+
+    <script>
+      const STORAGE_KEY = "cotizador_tone_viewer_v1";
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id") || "";
+      let tono = null;
+
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const data = raw ? JSON.parse(raw) : {};
+        tono = id ? data[id] : null;
+      } catch (error) {
+        tono = null;
+      }
+
+      const title = tono?.nombre || "Tono";
+      const line = tono?.linea || "Sin linea";
+      const group = tono?.carpeta || "General";
+      const src = tono?.src || "";
+
+      document.getElementById("title").textContent = title;
+      document.getElementById("meta").textContent = [line, group].filter(Boolean).join(" • ");
+
+      if (src) {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = title;
+        document.getElementById("content").innerHTML = "";
+        document.getElementById("content").appendChild(img);
+      }
+    </script>
+  </body>
+</html>
