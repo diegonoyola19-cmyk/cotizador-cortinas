@@ -41,6 +41,46 @@ export function useCotizadorState(authProfile = null) {
   const [cotizacionSeleccionadaId, setCotizacionSeleccionadaId] = useState("");
   const [mensajeAdmin, setMensajeAdmin] = useState("Aqui podras revisar el historial de cotizaciones enviadas.");
   const lastSavedData = useRef("");
+  const applyingRemoteRef = useRef(false);
+  const hydrationDoneRef = useRef(false);
+  const saveTimeoutRef = useRef(null);
+
+  function serializarBorrador(payload = {}) {
+    return JSON.stringify({
+      brand: payload.brand ?? brand,
+      catalogo: payload.catalogo ?? catalogo,
+      datos: payload.datos ?? datos,
+      items: payload.items ?? items,
+    });
+  }
+
+  function aplicarBorradorRemoto(data, opciones = {}) {
+    const catalogoRemoto = Array.isArray(data?.catalog) && data.catalog.length ? data.catalog : defaultCatalog;
+    const brandRemota = { ...defaultBrand, ...(data?.brand || {}) };
+    const datosRemotos = { ...defaultQuoteData, ...(data?.quote || {}) };
+    const itemsRemotos = Array.isArray(data?.items) ? data.items : [];
+
+    applyingRemoteRef.current = true;
+    setBrand(brandRemota);
+    setCatalogo(catalogoRemoto);
+    setDatos(datosRemotos);
+    setItems(itemsRemotos);
+    lastSavedData.current = serializarBorrador({
+      brand: brandRemota,
+      catalogo: catalogoRemoto,
+      datos: datosRemotos,
+      items: itemsRemotos,
+    });
+
+    window.clearTimeout(saveTimeoutRef.current);
+    window.setTimeout(() => {
+      applyingRemoteRef.current = false;
+    }, 0);
+
+    if (!opciones.silencioso) {
+      setEstadoNube(`Sincronizado en linea con "${String(syncKey || "").trim()}".`);
+    }
+  }
 
   function extraerConsecutivo(numeroCotizacion) {
     const coincidencia = String(numeroCotizacion || "").match(/(\d+)\s*$/);
@@ -85,16 +125,89 @@ export function useCotizadorState(authProfile = null) {
   }, []);
 
   useEffect(() => {
-    if (!SUPABASE_CONFIG_OK) return;
-    const interval = setInterval(() => {
-      if (syncKey && String(syncKey).trim()) {
-        const currentDataStr = JSON.stringify({ brand, catalogo, datos, items });
-        if (currentDataStr !== lastSavedData.current) {
-          guardarEnNube({ silencioso: true });
-        }
+    if (!SUPABASE_CONFIG_OK) return undefined;
+    const clave = String(syncKey || "").trim();
+    if (!clave) {
+      hydrationDoneRef.current = false;
+      return undefined;
+    }
+
+    let cancelado = false;
+
+    const inicializar = async () => {
+      setEstadoNube(`Conectando en linea con "${clave}"...`);
+      const { data, error } = await supabase
+        .from(SUPABASE_TABLE)
+        .select("brand, catalog, quote, items, updated_at")
+        .eq("id", clave)
+        .maybeSingle();
+
+      if (cancelado) return;
+
+      if (error) {
+        setEstadoNube("No se pudo conectar con la nube.");
+        hydrationDoneRef.current = true;
+        return;
       }
-    }, 60000);
-    return () => clearInterval(interval);
+
+      if (data) {
+        aplicarBorradorRemoto(data, { silencioso: true });
+        setEstadoNube(`Sincronizado en linea con "${clave}".`);
+      } else {
+        lastSavedData.current = serializarBorrador();
+        setEstadoNube(`Modo en linea activo para "${clave}".`);
+      }
+
+      hydrationDoneRef.current = true;
+    };
+
+    inicializar();
+
+    const channel = supabase
+      .channel(`draft-sync:${clave}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: SUPABASE_TABLE, filter: `id=eq.${clave}` },
+        (payload) => {
+          if (!payload.new) return;
+          aplicarBorradorRemoto(payload.new, { silencioso: true });
+          setEstadoNube(`Actualizado en linea desde otro dispositivo (${new Date().toLocaleTimeString()}).`);
+        }
+      )
+      .subscribe();
+
+    const recargarEnFoco = () => {
+      if (document.visibilityState === "visible") {
+        cargarDesdeNube({ silencioso: true });
+      }
+    };
+
+    document.addEventListener("visibilitychange", recargarEnFoco);
+    window.addEventListener("focus", recargarEnFoco);
+
+    return () => {
+      cancelado = true;
+      document.removeEventListener("visibilitychange", recargarEnFoco);
+      window.removeEventListener("focus", recargarEnFoco);
+      window.clearTimeout(saveTimeoutRef.current);
+      supabase.removeChannel(channel);
+    };
+  }, [syncKey]);
+
+  useEffect(() => {
+    if (!SUPABASE_CONFIG_OK) return undefined;
+    const clave = String(syncKey || "").trim();
+    if (!clave || !hydrationDoneRef.current || applyingRemoteRef.current) return undefined;
+
+    const currentDataStr = serializarBorrador();
+    if (currentDataStr === lastSavedData.current) return undefined;
+
+    window.clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = window.setTimeout(() => {
+      guardarEnNube({ silencioso: true });
+    }, 1200);
+
+    return () => window.clearTimeout(saveTimeoutRef.current);
   }, [syncKey, brand, catalogo, datos, items]);
 
   useEffect(() => {
@@ -315,10 +428,14 @@ export function useCotizadorState(authProfile = null) {
     const { error } = await supabase.from(SUPABASE_TABLE).upsert(payload, { onConflict: "id" });
     
     if (error) {
-      if (!opciones.silencioso) setEstadoNube("No se pudo guardar en Supabase.");
+      setEstadoNube("No se pudo guardar en Supabase.");
     } else {
       lastSavedData.current = currentDataStr;
-      if (!opciones.silencioso) setEstadoNube(`Borrador sincronizado con "${clave}".`);
+      setEstadoNube(
+        opciones.silencioso
+          ? `Sincronizado en linea con "${clave}" (${new Date().toLocaleTimeString()}).`
+          : `Borrador sincronizado con "${clave}".`
+      );
     }
     if (!opciones.silencioso) setSincronizando(false);
   }
@@ -346,12 +463,7 @@ export function useCotizadorState(authProfile = null) {
       return;
     }
 
-    const catalogoRemoto = Array.isArray(data.catalog) && data.catalog.length ? data.catalog : defaultCatalog;
-    setBrand({ ...defaultBrand, ...(data.brand || {}) });
-    setCatalogo(catalogoRemoto);
-    setDatos({ ...defaultQuoteData, ...(data.quote || {}) });
-    setItems(Array.isArray(data.items) ? data.items : []);
-
+    aplicarBorradorRemoto(data, { silencioso: true });
     setEstadoNube(`Cargado desde la nube con "${clave}".`);
     setSincronizando(false);
   }

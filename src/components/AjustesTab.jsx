@@ -76,7 +76,7 @@ export function AjustesTab({ state }) {
         <div className="space-y-4">
           <div className="flex items-start gap-2 rounded-lg bg-indigo-50/50 dark:bg-indigo-900/20 p-3 text-sm text-indigo-700 dark:text-indigo-300">
             <Cloud size={20} className="shrink-0 mt-0.5" />
-            <p>Usar la misma clave en todos tus dispositivos sincroniza automáticamente tu borrador e historial.</p>
+            <p>Usar la misma clave en todos tus dispositivos conecta el borrador en linea: abre en telefono o PC y se carga solo.</p>
           </div>
           <Campo label="Clave de Sync" value={syncKey} onChange={setSyncKey} />
           <div className="rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-3 text-xs text-slate-600 dark:text-slate-300 font-mono">
@@ -84,10 +84,10 @@ export function AjustesTab({ state }) {
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <ButtonPrimary onClick={guardarEnNube} disabled={sincronizando} color={brand.colorPrimario} className="py-2.5">
-              Subir a la nube
+              Sincronizar ahora
             </ButtonPrimary>
             <ButtonSecondary onClick={() => cargarDesdeNube()} disabled={sincronizando} className="py-2.5">
-              Cargar de la nube
+              Recargar ahora
             </ButtonSecondary>
           </div>
         </div>
@@ -118,3 +118,4 @@ export function AjustesTab({ state }) {
     </div>
   );
 }
+
