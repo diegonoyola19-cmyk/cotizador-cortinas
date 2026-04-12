@@ -1,12 +1,12 @@
 export function Panel({ titulo, children, extraTopRight, className = "", bodyClassName = "", tone = "default" }) {
   const toneMap = {
-    default: "border-slate-200/90 bg-white/92 shadow-[0_12px_34px_rgba(15,23,42,0.05)]",
-    subtle: "border-slate-200/80 bg-white/80 shadow-[0_10px_28px_rgba(15,23,42,0.04)]",
+    default: "border-slate-200/90 dark:border-slate-800 bg-white/92 dark:bg-slate-900 shadow-[0_12px_34px_rgba(15,23,42,0.05)]",
+    subtle: "border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 shadow-[0_10px_28px_rgba(15,23,42,0.04)]",
     highlight: "border-slate-800 bg-gradient-to-b from-slate-900 to-slate-950 text-white shadow-[0_18px_42px_rgba(15,23,42,0.18)]",
   };
 
-  const borderTone = tone === "highlight" ? "border-white/10" : "border-slate-200/80";
-  const titleTone = tone === "highlight" ? "text-white" : "text-slate-900";
+  const borderTone = tone === "highlight" ? "border-white/10" : "border-slate-200/80 dark:border-slate-800";
+  const titleTone = tone === "highlight" ? "text-white" : "text-slate-900 dark:text-slate-100";
 
   return (
     <div className={`rounded-[28px] border p-6 backdrop-blur-sm sm:p-7 ${toneMap[tone]} ${className}`}>
@@ -24,7 +24,9 @@ export function TabButton({ activo, onClick, children }) {
     <button
       onClick={onClick}
       className={`rounded-2xl px-4 py-2 text-sm font-medium transition-colors ${
-        activo ? "bg-slate-900 text-white shadow-sm" : "bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+        activo
+          ? "bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 shadow-sm"
+          : "bg-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-200"
       }`}
     >
       {children}
@@ -41,7 +43,7 @@ export function Campo({ label, value, onChange, type = "text", inputProps = {}, 
         step={type === "number" ? (inputProps.step || "0.01") : undefined}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-800 shadow-[inset_0_1px_2px_rgba(15,23,42,0.02)] transition-all placeholder:text-slate-300 focus:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-200/70 ${inputClassName}`}
+        className={`h-11 w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 text-sm text-slate-800 dark:text-slate-200 shadow-[inset_0_1px_2px_rgba(15,23,42,0.02)] transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:border-slate-400 dark:focus:border-slate-500 focus:outline-none focus:ring-4 focus:ring-slate-200/70 dark:focus:ring-slate-700/50 ${inputClassName}`}
         {...inputProps}
       />
     </div>
@@ -55,7 +57,7 @@ export function SelectField({ label, value, onChange, options, className = "", s
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-800 shadow-[inset_0_1px_2px_rgba(15,23,42,0.02)] transition-all focus:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-200/70 ${selectClassName}`}
+        className={`h-11 w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 text-sm text-slate-800 dark:text-slate-200 shadow-[inset_0_1px_2px_rgba(15,23,42,0.02)] transition-all focus:border-slate-400 dark:focus:border-slate-500 focus:outline-none focus:ring-4 focus:ring-slate-200/70 dark:focus:ring-slate-700/50 ${selectClassName}`}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -75,7 +77,7 @@ export function TextAreaField({ label, value, onChange }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={3}
-        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-[inset_0_1px_2px_rgba(15,23,42,0.02)] transition-all resize-y focus:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-200/70"
+        className="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-800 dark:text-slate-200 shadow-[inset_0_1px_2px_rgba(15,23,42,0.02)] transition-all resize-y focus:border-slate-400 dark:focus:border-slate-500 focus:outline-none focus:ring-4 focus:ring-slate-200/70 dark:focus:ring-slate-700/50"
       />
     </div>
   );
@@ -83,7 +85,7 @@ export function TextAreaField({ label, value, onChange }) {
 
 export function CheckboxField({ label, checked, onChange }) {
   return (
-    <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-xs text-slate-700 transition-colors hover:bg-slate-100">
+    <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800">
       <input
         type="checkbox"
         checked={checked}
@@ -145,7 +147,7 @@ export function ButtonSecondary({ children, onClick, disabled, className = "", i
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.04)] transition-all hover:-translate-y-0.5 hover:bg-slate-50 active:translate-y-0 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-50 ${className}`}
+      className={`inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-sm font-semibold text-slate-700 dark:text-slate-300 shadow-[0_8px_18px_rgba(15,23,42,0.04)] transition-all hover:-translate-y-0.5 hover:bg-slate-50 dark:hover:bg-slate-700 active:translate-y-0 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-50 ${className}`}
     >
       {icon}
       {children}

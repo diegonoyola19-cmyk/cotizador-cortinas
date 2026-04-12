@@ -24,29 +24,29 @@ export function CotizacionTab({ state }) {
       <div className="space-y-5">
         <Panel
           titulo="Datos del Cliente y Cotización"
-          className="!rounded-[28px] !bg-white/95 !p-5 sm:!p-7 shadow-[0_12px_40px_rgba(15,23,42,0.06)]"
+          className="!rounded-[28px] !p-5 sm:!p-7 shadow-[0_12px_40px_rgba(15,23,42,0.06)]"
           extraTopRight={
             <ButtonSecondary 
               onClick={() => {
                 if(window.confirm("¿Limpiar todos los datos?")) limpiarCotizacion();
               }} 
-              className="!h-9 w-full !bg-white !px-4 !text-xs !font-bold !text-slate-600 sm:w-auto hover:!text-red-600 hover:!border-red-200" 
+              className="!h-9 w-full !px-4 !text-xs !font-bold sm:w-auto hover:!text-red-600 dark:hover:!text-red-400 hover:!border-red-200 dark:hover:!border-red-900" 
               icon={<Plus size={14} className="rotate-45" />}
             >
               Limpiar Formulario
             </ButtonSecondary>
           }
         >
-          <div className="mb-4 rounded-[20px] border border-slate-200/60 bg-slate-50/50 p-4 transition-colors hover:bg-slate-50">
+          <div className="mb-4 rounded-[20px] border border-slate-200/60 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/40 p-4 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60">
             <div className="grid gap-4 md:grid-cols-12">
               <Campo label="Cliente" value={datos.cliente} onChange={(v) => actualizarDato("cliente", v)} className="md:col-span-4" inputClassName="h-10 px-3 text-sm font-semibold" labelClassName="!mb-1.5 !text-[10px] !uppercase" />
-              <Campo label="Folio COT" value={datos.numeroCotizacion} onChange={(v) => actualizarDato("numeroCotizacion", v)} className="md:col-span-3" inputClassName="h-10 px-3 text-sm font-bold text-sky-900 bg-sky-50/50 border-sky-100" labelClassName="!mb-1.5 !text-[10px] !uppercase text-sky-700" />
+              <Campo label="Folio COT" value={datos.numeroCotizacion} onChange={(v) => actualizarDato("numeroCotizacion", v)} className="md:col-span-3" inputClassName="h-10 px-3 text-sm font-bold text-sky-900 border-sky-100 dark:text-sky-200 dark:bg-sky-900/30 dark:border-sky-800" labelClassName="!mb-1.5 !text-[10px] !uppercase text-sky-700 dark:text-sky-300" />
               <Campo label="Fecha" type="date" value={datos.fecha} onChange={(v) => actualizarDato("fecha", v)} className="md:col-span-5" inputClassName="h-10 px-3 text-sm font-medium" labelClassName="!mb-1.5 !text-[10px] !uppercase" />
               
               <div className="md:col-span-4">
-                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500">Vendedor Asignado</label>
+                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">Vendedor Asignado</label>
                 <select
-                  className="h-10 w-full rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-800 shadow-[inset_0_2px_4px_rgba(15,23,42,0.02)] transition-all focus:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-200/70"
+                  className="h-10 w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 text-sm font-medium text-slate-800 dark:text-slate-200 shadow-[inset_0_2px_4px_rgba(15,23,42,0.02)] transition-all focus:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-200/70"
                   value={datos.vendedor || ""}
                   onChange={(e) => actualizarDato("vendedor", e.target.value)}
                 >
@@ -61,7 +61,7 @@ export function CotizacionTab({ state }) {
           </div>
 
           <div className="grid gap-4 md:grid-cols-12">
-            <Campo label="Desc. (%)" type="number" value={datos.descuentoPorcentaje} onChange={(v) => actualizarDato("descuentoPorcentaje", v)} className="md:col-span-3" inputClassName="h-10 px-3 text-sm font-bold text-emerald-700 bg-emerald-50/30 border-emerald-100" labelClassName="!mb-1.5 !text-[10px] !uppercase text-emerald-700" />
+            <Campo label="Desc. (%)" type="number" value={datos.descuentoPorcentaje} onChange={(v) => actualizarDato("descuentoPorcentaje", v)} className="md:col-span-3" inputClassName="h-10 px-3 text-sm font-bold text-emerald-700 bg-emerald-50/30 border-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/30 dark:border-emerald-800" labelClassName="!mb-1.5 !text-[10px] !uppercase text-emerald-700 dark:text-emerald-400" />
             <Campo label="Forma de Pago" value={datos.formaPago} onChange={(v) => actualizarDato("formaPago", v)} className="md:col-span-3" inputClassName="h-10 px-3 text-sm font-medium" labelClassName="!mb-1.5 !text-[10px] !uppercase" />
             <Campo label="Entrega Est." value={datos.tiempoEntrega} onChange={(v) => actualizarDato("tiempoEntrega", v)} className="md:col-span-3" inputClassName="h-10 px-3 text-sm font-medium" labelClassName="!mb-1.5 !text-[10px] !uppercase" />
             <Campo label="Nota para Cotización" value={datos.nota} onChange={(v) => actualizarDato("nota", v)} className="md:col-span-3" inputClassName="h-10 px-3 text-sm font-medium" labelClassName="!mb-1.5 !text-[10px] !uppercase" />
@@ -71,7 +71,7 @@ export function CotizacionTab({ state }) {
 
         <Panel
           titulo="Ítems a Cotizar"
-          className="!rounded-[28px] !bg-white/95 !p-5 sm:!p-7 shadow-[0_12px_40px_rgba(15,23,42,0.06)]"
+          className="!rounded-[28px] !p-5 sm:!p-7 shadow-[0_12px_40px_rgba(15,23,42,0.06)]"
           extraTopRight={
             <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
               <ButtonSecondary 
@@ -94,13 +94,13 @@ export function CotizacionTab({ state }) {
         >
           <div className="space-y-4">
             {itemsCalculados.length === 0 ? (
-              <div className="rounded-[24px] border border-dashed border-slate-300 bg-slate-50/50 p-8 text-center sm:p-10 transition-colors hover:bg-slate-50">
+              <div className="rounded-[24px] border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 p-8 text-center sm:p-10 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/70">
                 <div className="mx-auto max-w-md">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm border border-slate-100">
-                    <Plus size={24} className="text-slate-400" />
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700">
+                    <Plus size={24} className="text-slate-400 dark:text-slate-500" />
                   </div>
-                  <h3 className="text-lg font-bold tracking-tight text-slate-800">Lienzo en blanco</h3>
-                  <p className="mt-2 text-sm text-slate-500 leading-relaxed">Agrega ítems manualmente o utiliza el Asistente Mágico para importar medidas desde WhatsApp en segundos.</p>
+                  <h3 className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-200">Lienzo en blanco</h3>
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Agrega ítems manualmente o utiliza el Asistente Mágico para importar medidas desde WhatsApp en segundos.</p>
                   <div className="mt-6 flex justify-center gap-3">
                     <ButtonPrimary onClick={agregarItem} color="#0f172a" className="!h-10 !rounded-[16px] !px-5 !text-sm font-bold shadow-md" icon={<Plus size={16} />}>
                       Agregar primer ítem

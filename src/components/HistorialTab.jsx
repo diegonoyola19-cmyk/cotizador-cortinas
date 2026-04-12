@@ -5,9 +5,9 @@ import { generateFollowUpMessage } from "../utils/aiService";
 import { ButtonSecondary, Campo, CheckboxField, Panel, Vacio } from "./ui";
 
 const ESTATUS_OPCIONES = [
-  { id: "pendiente", label: "🟡 Pendiente", colorFondo: "bg-amber-50", colorBorde: "border-amber-200" },
-  { id: "aprobada", label: "🟢 Aprobada", colorFondo: "bg-emerald-50", colorBorde: "border-emerald-200" },
-  { id: "perdida", label: "🔴 Perdida", colorFondo: "bg-red-50", colorBorde: "border-red-200" }
+  { id: "pendiente", label: "🟡 Pendiente", colorFondo: "bg-amber-50 dark:bg-amber-900/20", colorBorde: "border-amber-200 dark:border-amber-800" },
+  { id: "aprobada", label: "🟢 Aprobada", colorFondo: "bg-emerald-50 dark:bg-emerald-900/20", colorBorde: "border-emerald-200 dark:border-emerald-800" },
+  { id: "perdida", label: "🔴 Perdida", colorFondo: "bg-red-50 dark:bg-red-900/20", colorBorde: "border-red-200 dark:border-red-800" }
 ];
 
 export function HistorialTab({ state }) {
@@ -59,7 +59,7 @@ export function HistorialTab({ state }) {
       <Panel titulo="Centro de Negocios (Lista Compacta)" className="flex-shrink-0 !pb-2">
         <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
           <Campo label="Búsqueda global (Cliente o Folio)" value={filtroAdmin} onChange={setFiltroAdmin} inputClassName="!h-9" />
-          <ButtonSecondary onClick={cargarPanelAdministrativo} disabled={cargandoAdmin} icon={<RefreshCw size={14} className={cargandoAdmin ? "animate-spin" : ""} />} className="!h-9">
+          <ButtonSecondary onClick={cargarPanelAdministrativo} disabled={cargandoAdmin} icon={<RefreshCw size={14} className={cargandoAdmin ? "animate-spin" : ""} />} className="!h-9 dark:!bg-slate-800 dark:!text-slate-200 dark:!border-slate-700">
             {cargandoAdmin ? "Sincronizando..." : "Sincronizar"}
           </ButtonSecondary>
         </div>
@@ -70,10 +70,10 @@ export function HistorialTab({ state }) {
           </div>
         )}
 
-        <div className="mt-4 flex overflow-x-auto custom-scrollbar pb-2 gap-2 border-b border-slate-200">
+        <div className="mt-4 flex overflow-x-auto custom-scrollbar pb-2 gap-2 border-b border-slate-200 dark:border-slate-800">
           <button 
             onClick={() => setFiltroEstatusHistorial("todos")}
-            className={`px-4 py-1.5 text-xs font-bold rounded-t-lg transition-colors border-b-2 ${filtroEstatusHistorial === "todos" ? "border-slate-800 text-slate-800" : "border-transparent text-slate-400 hover:text-slate-600 hover:bg-slate-50"}`}
+            className={`px-4 py-1.5 text-xs font-bold rounded-t-lg transition-colors border-b-2 ${filtroEstatusHistorial === "todos" ? "border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200" : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
           >
             📋 Todos ({cotizacionesFiltradas.length})
           </button>
@@ -85,7 +85,7 @@ export function HistorialTab({ state }) {
               <button 
                 key={opt.id}
                 onClick={() => setFiltroEstatusHistorial(opt.id)}
-                className={`px-4 py-1.5 text-xs font-bold rounded-t-lg transition-colors border-b-2 flex gap-1 ${Activo ? "border-slate-800 text-slate-800" : "border-transparent text-slate-500 hover:bg-slate-50"}`}
+                className={`px-4 py-1.5 text-xs font-bold rounded-t-lg transition-colors border-b-2 flex gap-1 ${Activo ? "border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200" : "border-transparent text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:text-slate-300"}`}
               >
                 <span>{opt.label.split(" ")[0]}</span> 
                 <span>{opt.label.split(" ")[1]} ({conteo})</span>
@@ -108,28 +108,28 @@ export function HistorialTab({ state }) {
               return (
                 <div
                   key={registro.id}
-                  className={`flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3 rounded-xl border p-3 transition-colors ${configStatus.colorFondo} ${configStatus.colorBorde} ${isSeleccionada ? "ring-2 ring-indigo-400 bg-white" : "hover:bg-white"}`}
+                  className={`flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3 rounded-xl border p-3 transition-colors ${configStatus.colorFondo} ${configStatus.colorBorde} ${isSeleccionada ? "ring-2 ring-indigo-400 bg-white dark:bg-slate-800 shadow-md" : "hover:bg-white dark:hover:bg-slate-800/80"}`}
                 >
                   {/* SECCION 1: INFO GENERAL */}
                   <div className="flex flex-col min-w-[200px] flex-1">
                      <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-400">{registro.quote?.numeroCotizacion || "S/Folio"}</span>
-                        <h4 className="text-sm font-extrabold text-slate-800 truncate" title={registro.quote?.cliente}>{registro.quote?.cliente || "Desconocido"}</h4>
+                        <h4 className="text-sm font-extrabold text-slate-800 dark:text-slate-100 truncate" title={registro.quote?.cliente}>{registro.quote?.cliente || "Desconocido"}</h4>
                      </div>
                      <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
                         <span title={registro.quote?.fecha}>Hace {dias === 0 ? "hoy" : dias === 1 ? "1 dia" : `${dias} dias`}</span>
-                        <span className="text-slate-300">•</span>
-                        <span className="font-medium text-slate-600 truncate max-w-[120px]">Asesor: {registro.quote?.vendedor || "-"}</span>
+                        <span className="text-slate-300 dark:text-slate-600">•</span>
+                        <span className="font-medium text-slate-600 dark:text-slate-400 truncate max-w-[120px]">Asesor: {registro.quote?.vendedor || "-"}</span>
                      </div>
                   </div>
 
                   {/* SECCION 2: ESTATUS Y MEDIDAS (CONTROLES AGILES) */}
-                  <div className="flex items-center gap-4 flex-wrap xl:flex-nowrap border-y xl:border-y-0 border-slate-200/50 py-2 xl:py-0">
+                  <div className="flex items-center gap-4 flex-wrap xl:flex-nowrap border-y xl:border-y-0 border-slate-200/50 dark:border-slate-700/50 py-2 xl:py-0">
                      <div className="flex flex-col w-[130px]">
                         <select 
                           value={statusActual}
                           onChange={(e) => actualizarEstatusCRM(registro.id, e.target.value)}
-                          className={`w-full h-8 px-2 text-xs font-bold border rounded-lg cursor-pointer outline-none ${configStatus.colorBorde} bg-white shadow-sm text-slate-700 focus:ring-2 focus:ring-slate-200`}
+                          className={`w-full h-8 px-2 text-xs font-bold border rounded-lg cursor-pointer outline-none ${configStatus.colorBorde} bg-white dark:bg-slate-900 shadow-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-slate-200 dark:focus:ring-slate-700`}
                         >
                           {ESTATUS_OPCIONES.map(opt => (
                              <option key={opt.id} value={opt.id}>{opt.label}</option>
@@ -139,7 +139,7 @@ export function HistorialTab({ state }) {
                      
                      <div className="flex items-center h-8 px-1">
                        <CheckboxField
-                         label={<span className="text-[10px] font-bold text-slate-600 pl-1 uppercase tracking-wider">Medidas Conf.</span>}
+                         label={<span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 pl-1 uppercase tracking-wider">Medidas Conf.</span>}
                          checked={registro.quote?.medidasConfirmadas || false}
                          onChange={() => toggleMedidasConfirmadasCRM(registro.id, registro.quote?.medidasConfirmadas)}
                          className="!mb-0"
@@ -149,28 +149,28 @@ export function HistorialTab({ state }) {
 
                   {/* SECCION 3: TOTAL Y BOTONES */}
                   <div className="flex items-center justify-between xl:justify-end gap-3 flex-shrink-0">
-                     <div className="text-sm font-extrabold text-slate-800 flex flex-col items-end min-w-[90px]">
-                       <span className="text-[9px] uppercase text-slate-400 font-bold mb-[1px]">Total</span>
+                     <div className="text-sm font-extrabold text-slate-800 dark:text-slate-100 flex flex-col items-end min-w-[90px]">
+                       <span className="text-[9px] uppercase text-slate-400 dark:text-slate-500 font-bold mb-[1px]">Total</span>
                        {formatoDinero(registro.totals?.totalFinal || 0)}
                      </div>
 
-                     <div className="flex items-center gap-1.5 ml-2 border-l border-slate-200/60 pl-3">
+                     <div className="flex items-center gap-1.5 ml-2 border-l border-slate-200/60 dark:border-slate-700/60 pl-3">
                         <button 
                           onClick={() => setIaTargetRegistro(registro)}
-                          className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-colors shadow-sm"
+                          className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-slate-200 transition-colors shadow-sm"
                           title="IA Seguimiento"
                         >
                           <MessageCircle size={14} />
                         </button>
                         <button 
                           onClick={() => cargarCotizacionGuardada(registro)}
-                          className="h-8 px-3 flex items-center justify-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 text-[11px] font-bold text-indigo-700 hover:bg-indigo-100 transition-colors shadow-sm"
+                          className="h-8 px-3 flex items-center justify-center gap-1.5 rounded-lg border border-indigo-200 dark:border-indigo-800/50 bg-indigo-50 dark:bg-indigo-900/30 text-[11px] font-bold text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors shadow-sm"
                         >
                           <span>Ver</span> <span className="hidden sm:inline"> / Editar</span>
                         </button>
                         <button 
                           onClick={() => eliminarCotizacionGuardada(registro.id)}
-                          className="h-8 w-8 flex items-center justify-center rounded-lg border border-red-100 bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors shadow-sm"
+                          className="h-8 w-8 flex items-center justify-center rounded-lg border border-red-100 dark:border-red-900/20 bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 hover:text-red-700 dark:hover:text-red-300 transition-colors shadow-sm"
                           title="Borrar"
                         >
                           <Trash2 size={14} />
@@ -186,11 +186,11 @@ export function HistorialTab({ state }) {
         </div>
       </div>
 
-      {/* MODALES DE IA (Intactos) */}
+      {/* MODALES DE IA */}
       {iaTargetRegistro && !mensajeGenerado && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm anim-fade-in">
-          <div className="relative flex w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-xl">
-            <div className="flex items-center justify-between bg-emerald-600 p-4 text-white">
+          <div className="relative flex w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-emerald-100 dark:border-emerald-800 bg-white dark:bg-slate-900 shadow-xl">
+            <div className="flex items-center justify-between bg-emerald-600 dark:bg-emerald-700 p-4 text-white">
               <div className="flex items-center gap-2 font-bold">
                 <MessageCircle size={20} />
                 Generador IA
@@ -202,15 +202,15 @@ export function HistorialTab({ state }) {
 
             <div className="space-y-4 p-6">
               <div>
-                <p className="mb-1 text-sm font-medium text-slate-500">Que clase de mensaje deseas redactar sobre la cotizacion?</p>
-                <p className="text-base font-bold text-slate-800">{iaTargetRegistro.quote?.cliente}</p>
+                <p className="mb-1 text-sm font-medium text-slate-500 dark:text-slate-400">Que clase de mensaje deseas redactar sobre la cotizacion?</p>
+                <p className="text-base font-bold text-slate-800 dark:text-slate-200">{iaTargetRegistro.quote?.cliente}</p>
               </div>
 
               <div className="space-y-2">
                 <ButtonSecondary
                   disabled={generandoMensaje}
                   onClick={() => handleGenerarMensaje(iaTargetRegistro, "envio")}
-                  className="w-full !justify-start !bg-slate-50 py-3 text-left text-sm text-slate-700 hover:!bg-slate-100"
+                  className="w-full !justify-start !bg-slate-50 dark:!bg-slate-800 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:!bg-slate-100 dark:hover:!bg-slate-700"
                 >
                   Entrega inicial de cotizacion
                 </ButtonSecondary>
@@ -237,8 +237,8 @@ export function HistorialTab({ state }) {
 
       {mensajeGenerado && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm anim-fade-in">
-          <div className="flex w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
-            <div className="flex items-center justify-between bg-emerald-600 p-4 text-white">
+          <div className="flex w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
+            <div className="flex items-center justify-between bg-emerald-600 dark:bg-emerald-700 p-4 text-white">
               <div className="flex items-center gap-2 font-bold">
                 <MessageCircle size={20} />
                 Mensaje Generado por IA
@@ -248,12 +248,12 @@ export function HistorialTab({ state }) {
               </button>
             </div>
             <div className="p-5">
-              <p className="mb-3 text-xs text-slate-500">La IA redacto este mensaje basandose en la cotizacion. Copialo y envialo por WhatsApp o correo.</p>
-              <div className="whitespace-pre-wrap rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-medium text-slate-800">
+              <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">La IA redacto este mensaje basandose en la cotizacion. Copialo y envialo por WhatsApp o correo.</p>
+              <div className="whitespace-pre-wrap rounded-xl border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 p-4 text-sm font-medium text-slate-800 dark:text-slate-200">
                 {mensajeGenerado.texto}
               </div>
             </div>
-            <div className="flex flex-col-reverse justify-end gap-2 border-t border-slate-100 bg-slate-50 p-4 sm:flex-row">
+            <div className="flex flex-col-reverse justify-end gap-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-4 sm:flex-row">
               <ButtonSecondary onClick={() => setMensajeGenerado(null)} className="w-full sm:w-auto">Cerrar</ButtonSecondary>
               <button
                 onClick={() => {

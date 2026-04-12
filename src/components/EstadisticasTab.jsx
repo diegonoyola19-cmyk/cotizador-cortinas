@@ -84,14 +84,14 @@ export function EstadisticasTab({ state }) {
   return (
     <div className="mt-4 space-y-6 anim-fade-in">
       <div className="mb-2 px-2">
-        <h2 className="text-2xl font-black text-slate-800 tracking-tight">{saludo}, equipo.</h2>
-        <p className="text-sm font-medium text-slate-500">Aquí está el resumen financiero actualizado al momento.</p>
+        <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{saludo}, equipo.</h2>
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Aquí está el resumen financiero actualizado al momento.</p>
       </div>
 
       <Panel titulo="Centro de Mando y Estadísticas">
         
         {/* Controles Top */}
-        <div className="mb-6 flex flex-col justify-between gap-4 border-b border-slate-100 pb-4 sm:flex-row sm:items-center">
+        <div className="mb-6 flex flex-col justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4 sm:flex-row sm:items-center">
           <div className="flex w-full flex-col items-stretch gap-4 sm:flex-row sm:items-center">
             <ButtonSecondary 
               onClick={cargarPanelAdministrativo} 
@@ -104,16 +104,16 @@ export function EstadisticasTab({ state }) {
             <ButtonSecondary 
               onClick={ejecutarAnalista} 
               disabled={cargandoAdmin || analizando || !cotizacionesGuardadas?.length} 
-              className="!bg-indigo-50 !text-indigo-700 hover:!bg-indigo-100 border border-indigo-200"
+              className="!bg-indigo-50 dark:!bg-indigo-900/40 !text-indigo-700 dark:!text-indigo-300 hover:!bg-indigo-100 dark:hover:!bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800"
               icon={<Sparkles size={16} />}
             >
                {analizando ? "Analizando..." : "Analista de Negocio (IA)"}
             </ButtonSecondary>
             
             <div className="flex w-full flex-col sm:w-auto">
-              <span className="text-[10px] font-bold text-slate-500 uppercase ml-1 mb-0.5">Filtrar Vendedor:</span>
+              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase ml-1 mb-0.5">Filtrar Vendedor:</span>
               <select 
-                className="h-9 min-w-0 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700 focus:border-indigo-400 focus:outline-none sm:min-w-[200px]"
+                className="h-9 min-w-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm font-medium text-slate-700 dark:text-slate-300 focus:border-indigo-400 focus:outline-none sm:min-w-[200px]"
                 value={vendedorFiltro}
                 onChange={(e) => setVendedorFiltro(e.target.value)}
               >
@@ -137,9 +137,9 @@ export function EstadisticasTab({ state }) {
 
         {/* Gráficos */}
         {metricas.chartData.length > 0 ? (
-           <div className="rounded-2xl border border-slate-100 bg-slate-50/30 p-4 shadow-sm sm:p-5">
-             <h3 className="text-sm font-bold text-slate-800 mb-6 flex items-center gap-2">
-               <Users size={16} className="text-indigo-500"/>
+           <div className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/40 p-4 shadow-sm sm:p-5">
+             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-6 flex items-center gap-2">
+               <Users size={16} className="text-indigo-500 dark:text-indigo-400"/>
                Desempeño por Asesor Comercial
              </h3>
              <div className="overflow-x-auto pb-2 custom-scrollbar">
@@ -168,8 +168,8 @@ export function EstadisticasTab({ state }) {
 
       {analisisAI && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 anim-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
-            <div className="bg-indigo-600 p-5 flex justify-between items-center text-white">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700">
+            <div className="bg-indigo-600 dark:bg-indigo-700 p-5 flex justify-between items-center text-white">
               <div className="flex items-center gap-3">
                 <div className="bg-white/20 p-2 rounded-xl text-white">
                   <Sparkles size={24} />
@@ -184,15 +184,17 @@ export function EstadisticasTab({ state }) {
               </button>
             </div>
             
-            <div className="p-6 overflow-y-auto w-full custom-scrollbar text-sm text-slate-700 font-medium space-y-4" dangerouslySetInnerHTML={{ __html: analisisAI }} />
+            <div className="p-6 overflow-y-auto w-full custom-scrollbar text-sm text-slate-700 dark:text-slate-300 font-medium space-y-4" dangerouslySetInnerHTML={{ __html: analisisAI }} />
              
-            <div className="p-5 border-t border-slate-100 bg-slate-50 flex justify-end">
+            <div className="p-5 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex justify-end">
               <ButtonSecondary onClick={() => setAnalisisAI("")}>Entendido, cerrar</ButtonSecondary>
             </div>
             <style>{`
               .custom-scrollbar ul { list-style: disc; margin-left: 20px; }
-              .custom-scrollbar h3 { font-size: 16px; font-weight: bold; color: #1e293b; margin-top: 10px; margin-bottom: 5px; }
-              .custom-scrollbar b, .custom-scrollbar strong { font-weight: bold; color: #0f172a; }
+              html.dark .custom-scrollbar h3 { font-size: 16px; font-weight: bold; color: #f8fafc; margin-top: 10px; margin-bottom: 5px; }
+              html:not(.dark) .custom-scrollbar h3 { font-size: 16px; font-weight: bold; color: #1e293b; margin-top: 10px; margin-bottom: 5px; }
+              html.dark .custom-scrollbar b, html.dark .custom-scrollbar strong { font-weight: bold; color: #f1f5f9; }
+              html:not(.dark) .custom-scrollbar b, html:not(.dark) .custom-scrollbar strong { font-weight: bold; color: #0f172a; }
             `}</style>
           </div>
         </div>
@@ -211,14 +213,14 @@ export function EstadisticasTab({ state }) {
 // Subcomponente local para los KPI
 function KpiCard({ title, value, subtitle, icon, color, isHighlight, onClick }) {
   const colorMap = {
-    blue: "bg-blue-50 text-blue-600 border-blue-100",
-    emerald: "bg-emerald-50 text-emerald-600 border-emerald-100",
-    indigo: "bg-indigo-50 text-indigo-600 border-indigo-100",
+    blue: "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-800",
+    emerald: "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800",
+    indigo: "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-indigo-800",
   };
 
   const bgStyle = isHighlight 
-    ? "bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-emerald-500/30" 
-    : "bg-white border-slate-200 text-slate-800";
+    ? "bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-emerald-500/30 dark:shadow-emerald-900/20" 
+    : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100";
 
   const subStyle = isHighlight ? "text-emerald-100" : "text-slate-500";
   const iconStyle = isHighlight ? "bg-white/20 text-white" : colorMap[color];
@@ -233,7 +235,7 @@ function KpiCard({ title, value, subtitle, icon, color, isHighlight, onClick }) 
           {icon}
         </div>
       </div>
-      <div className={`text-2xl sm:text-3xl font-black tracking-tight mb-1 ${isHighlight ? 'text-white' : 'text-slate-800'}`}>
+      <div className={`text-2xl sm:text-3xl font-black tracking-tight mb-1 ${isHighlight ? 'text-white' : 'text-slate-800 dark:text-slate-100'}`}>
         {value}
       </div>
       <div className={`text-xs font-medium ${subStyle}`}>

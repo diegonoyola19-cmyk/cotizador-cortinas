@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { BarChart3, ClipboardList, History, Menu, Settings, Shield, X, Home, LogOut } from "lucide-react";
+import { BarChart3, ClipboardList, History, Menu, Settings, Shield, X, Home, LogOut, Moon, Sun } from "lucide-react";
 import { supabase } from "./supabaseClient";
 import { useCotizadorState } from "./hooks/useCotizadorState";
 import { CotizacionTab } from "./components/CotizacionTab";
@@ -13,6 +13,19 @@ export default function CotizadorCortinasWeb({ authProfile }) {
   const { tabActiva, setTabActiva } = state;
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDarkMode]);
 
   useEffect(() => {
     if (menuAbierto) {
@@ -61,9 +74,15 @@ export default function CotizadorCortinasWeb({ authProfile }) {
   };
 
   return (
-    <div className="min-h-screen p-3 font-sans text-slate-800 sm:p-6 md:p-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-4 rounded-[30px] border border-slate-200/80 bg-white/92 px-4 py-4 shadow-[0_12px_34px_rgba(15,23,42,0.05)] backdrop-blur-md sm:mb-6 sm:px-7">
+    <div className="min-h-screen flex flex-col relative w-full font-sans text-slate-800 dark:text-slate-100 transition-colors duration-300 bg-slate-50 dark:bg-slate-950">
+      {/* Background patterns */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-br from-sky-400/5 to-transparent dark:from-sky-400/10"></div>
+        <div className="absolute top-0 right-0 w-full h-[50vh] bg-gradient-to-bl from-emerald-400/5 to-transparent dark:from-emerald-400/10"></div>
+      </div>
+      
+      <div className="relative z-10 w-full mx-auto max-w-7xl p-3 sm:p-6 md:p-8">
+        <div className="mb-4 rounded-[30px] border border-slate-200/80 dark:border-slate-800 bg-white/92 dark:bg-slate-900/90 px-4 py-4 shadow-[0_12px_34px_rgba(15,23,42,0.05)] backdrop-blur-md sm:mb-6 sm:px-7 transition-colors duration-300">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3 sm:items-center sm:gap-4">
               <button
@@ -82,7 +101,7 @@ export default function CotizadorCortinasWeb({ authProfile }) {
                     className="h-16 w-16 shrink-0 rounded-[1.3rem] object-cover shadow-[0_14px_28px_rgba(15,23,42,0.12)] sm:h-[5.5rem] sm:w-[5.5rem]"
                   />
                   <div className="min-w-0">
-                    <h1 className="text-xl font-black tracking-[-0.05em] text-slate-950 sm:text-[2rem] group-hover:text-indigo-600 transition-colors">
+                    <h1 className="text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white sm:text-[2rem] group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                       {state.brand.empresa}
                     </h1>
                     {state.brand.slogan ? (
@@ -95,9 +114,24 @@ export default function CotizadorCortinasWeb({ authProfile }) {
               </div>
             </div>
 
-            <div className="hidden rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-2 text-right lg:block">
-              <p className="text-[11px] font-semibold tracking-[0.14em] text-slate-400">Vista actual</p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">{vistaActual.label}</p>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="hidden sm:inline-flex h-[4.75rem] min-w-[4.75rem] items-center justify-center rounded-[1.15rem] border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition hover:bg-white dark:hover:bg-slate-700"
+                aria-label="Alternar modo oscuro"
+              >
+                {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
+              </button>
+              <div className="hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 px-4 py-2 text-right lg:block">
+                <p className="text-[11px] font-semibold tracking-[0.14em] text-slate-400">Vista actual</p>
+                <p className="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-200">{vistaActual.label}</p>
+              </div>
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="inline-flex sm:hidden p-2 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition"
+              >
+                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
             </div>
           </div>
         </div>
