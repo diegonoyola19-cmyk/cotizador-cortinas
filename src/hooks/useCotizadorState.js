@@ -41,9 +41,11 @@ export function useCotizadorState(authProfile = null) {
   const [cotizacionSeleccionadaId, setCotizacionSeleccionadaId] = useState("");
   const [mensajeAdmin, setMensajeAdmin] = useState("Aqui podras revisar el historial de cotizaciones enviadas.");
   const lastSavedData = useRef("");
+  const currentDraftRef = useRef("");
   const applyingRemoteRef = useRef(false);
   const hydrationDoneRef = useRef(false);
   const saveTimeoutRef = useRef(null);
+  const lastRemoteUpdatedAtRef = useRef("");
 
   function serializarBorrador(payload = {}) {
     return JSON.stringify({
@@ -55,22 +57,26 @@ export function useCotizadorState(authProfile = null) {
   }
 
   function aplicarBorradorRemoto(data, opciones = {}) {
+    const remoteUpdatedAt = String(data?.updated_at || "");
     const catalogoRemoto = Array.isArray(data?.catalog) && data.catalog.length ? data.catalog : defaultCatalog;
     const brandRemota = { ...defaultBrand, ...(data?.brand || {}) };
     const datosRemotos = { ...defaultQuoteData, ...(data?.quote || {}) };
     const itemsRemotos = Array.isArray(data?.items) ? data.items : [];
+    const draftSerializado = serializarBorrador({
+      brand: brandRemota,
+      catalogo: catalogoRemoto,
+      datos: datosRemotos,
+      items: itemsRemotos,
+    });
 
     applyingRemoteRef.current = true;
     setBrand(brandRemota);
     setCatalogo(catalogoRemoto);
     setDatos(datosRemotos);
     setItems(itemsRemotos);
-    lastSavedData.current = serializarBorrador({
-      brand: brandRemota,
-      catalogo: catalogoRemoto,
-      datos: datosRemotos,
-      items: itemsRemotos,
-    });
+    lastSavedData.current = draftSerializado;
+    currentDraftRef.current = draftSerializado;
+    lastRemoteUpdatedAtRef.current = remoteUpdatedAt;
 
     window.clearTimeout(saveTimeoutRef.current);
     window.setTimeout(() => {
@@ -121,6 +127,10 @@ export function useCotizadorState(authProfile = null) {
   }, [cotizacionesGuardadas, tabActiva, datos.numeroCotizacion]);
 
   useEffect(() => {
+    currentDraftRef.current = serializarBorrador();
+  }, [brand, catalogo, datos, items]);
+
+  useEffect(() => {
     if (!SUPABASE_CONFIG_OK) return;
   }, []);
 
@@ -154,7 +164,9 @@ export function useCotizadorState(authProfile = null) {
         aplicarBorradorRemoto(data, { silencioso: true });
         setEstadoNube(`Sincronizado en linea con "${clave}".`);
       } else {
-        lastSavedData.current = serializarBorrador();
+        lastSavedData.current = "";
+        currentDraftRef.current = serializarBorrador();
+        lastRemoteUpdatedAtRef.current = "";
         setEstadoNube(`Modo en linea activo para "${clave}".`);
       }
 
@@ -170,6 +182,16 @@ export function useCotizadorState(authProfile = null) {
         { event: "*", schema: "public", table: SUPABASE_TABLE, filter: `id=eq.${clave}` },
         (payload) => {
           if (!payload.new) return;
+          const hayCambiosLocalesPendientes = currentDraftRef.current !== lastSavedData.current;
+          const remoteUpdatedAt = String(payload.new.updated_at || "");
+          const yaProcesado = remoteUpdatedAt && remoteUpdatedAt === lastRemoteUpdatedAtRef.current;
+
+          if (yaProcesado) return;
+          if (hayCambiosLocalesPendientes) {
+            setEstadoNube("Hay cambios locales pendientes; no se sobrescribio el borrador.");
+            return;
+          }
+
           aplicarBorradorRemoto(payload.new, { silencioso: true });
           setEstadoNube(`Actualizado en linea desde otro dispositivo (${new Date().toLocaleTimeString()}).`);
         }
@@ -177,7 +199,7 @@ export function useCotizadorState(authProfile = null) {
       .subscribe();
 
     const recargarEnFoco = () => {
-      if (document.visibilityState === "visible") {
+      if (document.visibilityState === "visible" && currentDraftRef.current === lastSavedData.current) {
         cargarDesdeNube({ silencioso: true });
       }
     };
@@ -424,13 +446,16 @@ export function useCotizadorState(authProfile = null) {
     }
     
     const currentDataStr = JSON.stringify({ brand, catalogo, datos, items });
-    const payload = { id: clave, brand, catalog: catalogo, quote: datos, items, updated_at: new Date().toISOString() };
+    const updatedAt = new Date().toISOString();
+    const payload = { id: clave, brand, catalog: catalogo, quote: datos, items, updated_at: updatedAt };
     const { error } = await supabase.from(SUPABASE_TABLE).upsert(payload, { onConflict: "id" });
     
     if (error) {
       setEstadoNube("No se pudo guardar en Supabase.");
     } else {
       lastSavedData.current = currentDataStr;
+      currentDraftRef.current = currentDataStr;
+      lastRemoteUpdatedAtRef.current = updatedAt;
       setEstadoNube(
         opciones.silencioso
           ? `Sincronizado en linea con "${clave}" (${new Date().toLocaleTimeString()}).`
